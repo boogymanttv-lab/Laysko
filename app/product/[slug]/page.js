@@ -59,8 +59,28 @@ export default async function ProductPage({ params }) {
     priceCents: p.price_cents, compareAtCents: p.compare_at_cents,
   };
 
+  const base = (process.env.SITE_URL || "https://www.laysko.com").replace(/\/$/, "");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.title,
+    description: (p.description || "").replace(/\s+/g, " ").trim().slice(0, 500) || undefined,
+    image: (p.images || []).slice(0, 5),
+    url: `${base}/product/${p.slug}`,
+    ...(p.category ? { category: p.category } : {}),
+    offers: {
+      "@type": "Offer",
+      url: `${base}/product/${p.slug}`,
+      priceCurrency: "EUR",
+      price: (p.price_cents / 100).toFixed(2),
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  };
+
   return (
     <div className="container">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <div className="crumbs">
         <Link href="/">Начало</Link> / <Link href="/products">Продукти</Link> / {p.title}
       </div>

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Check } from "../Icons";
 import ClearCart from "./ClearCart";
 
-export const metadata = { title: "Благодарим!" };
+export const metadata = { title: "Благодарим!", robots: { index: false, follow: false } };
 
 export default function Success() {
   return (
