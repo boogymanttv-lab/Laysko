@@ -71,9 +71,9 @@ export default function HomeForm({ initial, categories }) {
 
   return (
     <form onSubmit={submit} className="form-card" style={{ maxWidth: 820 }}>
-      <Sec title="Лого" hint="Качи логото си (PNG с прозрачен фон или SVG, до 4 MB). Ако не качиш, се показва котенцето по подразбиране с името Laysko.">
+      <Sec title="Лого" hint="Качи логото си (PNG с прозрачен фон или SVG, до 4 MB). Ако не качиш, се показва логото Laysko с котенцето, което е по подразбиране.">
         <Img label="Лого" value={c.images.logo} preview={previews.logo} onUrl={(v) => set("images.logo", v)} onFile={(f) => pickFile("logo", f)} />
-        {c.images.logo && <button type="button" className="btn ghost sm" style={{ marginTop: 8 }} onClick={() => { set("images.logo", ""); setPreviews((s) => ({ ...s, logo: null })); setFiles((s) => ({ ...s, logo: null })); }}>Върни котенцето по подразбиране</button>}
+        {c.images.logo && <button type="button" className="btn ghost sm" style={{ marginTop: 8 }} onClick={() => { set("images.logo", ""); setPreviews((s) => ({ ...s, logo: null })); setFiles((s) => ({ ...s, logo: null })); }}>Върни логото по подразбиране</button>}
       </Sec>
 
       <Sec title="Бягаща лента най-горе" hint="Всеки ред е отделно съобщение. Лентата се върти сама.">

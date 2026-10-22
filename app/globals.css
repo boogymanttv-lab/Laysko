@@ -506,3 +506,4 @@ body { background: var(--cream); }
 .ic-card .paybadges { justify-content: center; flex-wrap: wrap; margin-top: auto !important; }
 .ic-card .chip { margin-top: auto; background: var(--blush); color: var(--accent); font-weight: 700; border-radius: 999px; padding: 6px 16px; font-size: 14px; }
 .ic-card .btn { margin-top: auto; }
+.logo-img { height: 58px; } .site-footer .logo-img { height: 64px; } @media (max-width: 600px) { .logo-img { height: 46px; } }
