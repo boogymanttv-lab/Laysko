@@ -10,8 +10,23 @@ import ProductCard from "../../ProductCard";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
-  const { data: p } = await db().from("products").select("title, description").eq("slug", params.slug).eq("active", true).maybeSingle();
-  return p ? { title: p.title, description: p.description?.slice(0, 160) } : {};
+  const { data: p } = await db().from("products").select("title, description, images, slug").eq("slug", params.slug).eq("active", true).maybeSingle();
+  if (!p) return {};
+  const desc = (p.description || "").replace(/\s+/g, " ").trim().slice(0, 200) || undefined;
+  const img = p.images?.[0];
+  return {
+    title: p.title,
+    description: desc,
+    alternates: { canonical: `/product/${p.slug}` },
+    openGraph: {
+      type: "website",
+      title: p.title,
+      description: desc,
+      url: `/product/${p.slug}`,
+      ...(img ? { images: [{ url: img, alt: p.title }] } : {}),
+    },
+    twitter: { card: img ? "summary_large_image" : "summary", title: p.title, description: desc, ...(img ? { images: [img] } : {}) },
+  };
 }
 
 async function loadProduct(slug) {

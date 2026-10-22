@@ -12,9 +12,23 @@ import CookieBar from "./CookieBar";
 const SITE = process.env.NEXT_PUBLIC_SITE_NAME || "Laysko";
 export const dynamic = "force-dynamic";
 
+const URL_BASE = process.env.SITE_URL || "https://www.laysko.com";
+const DESC = "Внимателно подбрани продукти със сигурно плащане и доставка до адреса ти.";
+
 export const metadata = {
+  metadataBase: new URL(URL_BASE),
   title: { default: SITE, template: `%s · ${SITE}` },
-  description: "Внимателно подбрани продукти със сигурно плащане и доставка до адреса ти.",
+  description: DESC,
+  openGraph: {
+    type: "website",
+    locale: "bg_BG",
+    siteName: SITE,
+    title: SITE,
+    description: DESC,
+    url: "/",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE }],
+  },
+  twitter: { card: "summary_large_image", title: SITE, description: DESC, images: ["/og.png"] },
 };
 
 export default async function RootLayout({ children }) {
