@@ -455,15 +455,13 @@ th { color: var(--muted); font-weight: 600; background: var(--soft); }
   --shadow: 0 1px 2px rgba(120,60,80,.05), 0 8px 24px rgba(120,60,80,.08);
   --shadow-lg: 0 2px 4px rgba(120,60,80,.06), 0 20px 48px rgba(120,60,80,.14);
 }
-body { background: var(--cream); font-size: 18px; line-height: 1.65; font-family: Nunito, Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-button, input, select, textarea { font-family: inherit; }
+body { background: var(--cream); }
 .btn { background: var(--fg); }
 .btn.ghost { background: rgba(255,255,255,.7); border-color: #e9cdd3; }
 .card, .st, .mini, .faq details, .form-card, .cart-btn, .search { background: #fff; border-color: var(--line); }
 .search { background: #fff7f8; }
 .site-header { background: rgba(255,248,243,.94); border-bottom-color: var(--line); }
-.main-nav a, .main-nav .dd > a { font-size: 16px; font-weight: 600; }
-.brand { font-size: 26px; }
+.main-nav a, .main-nav .dd > a { font-size: 15px; font-weight: 500; }
 .topbar { background: linear-gradient(90deg, #c04a68, #d46a86, #c04a68); }
 
 /* секции в различни нежни цветове */
@@ -484,18 +482,27 @@ button, input, select, textarea { font-family: inherit; }
 .site-footer .copy { border-top-color: #ecc6d0; }
 .cta-band2, .closing { background: linear-gradient(135deg, #c04a68, #a8527f); }
 .cat-img { border-color: #fff; background: #fff; }
-.cat-tile span { font-size: 17px; }
 .tag { background: var(--accent); } .go { background: var(--accent); }
 .tabs button.on { background: var(--accent); border-color: var(--accent); }
-.sec-title { font-size: clamp(30px, 3.6vw, 42px); }
-.fhero p, .brand-story p, .page-narrow .lead { font-size: 19px; }
-.card .title { font-size: 19px; }
 .eyebrow { color: var(--accent); }
 .paybadges b { background: #fff; }
-@media (max-width: 600px) { body { font-size: 17px; } }
 
 /* Лого */
 .brand { gap: 10px; }
-.wordmark { font-weight: 800; font-size: 28px; letter-spacing: -.02em; color: var(--fg); }
+.wordmark { font-weight: 800; font-size: 24px; letter-spacing: -.02em; color: var(--fg); }
 .logo-img { height: 46px; width: auto; max-width: 220px; object-fit: contain; display: block; }
-.site-footer .brand .wordmark { font-size: 26px; }
+.site-footer .brand .wordmark { font-size: 22px; }
+
+/* Доставка, плащане, връщане – карти */
+.sec-sub { text-align: center; color: var(--muted); font-size: 17px; margin: -22px auto 40px; padding-top: 6px; max-width: 560px; }
+.info3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; align-items: stretch; }
+.ic-card { background: #fff; border: 1px solid #f0d3da; border-radius: 24px; padding: 34px 28px; text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 4px; transition: transform .25s, box-shadow .25s; }
+.ic-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.ic-big { width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #d46a86, #c04a68); box-shadow: 0 10px 22px rgba(192,74,104,.35); margin-bottom: 14px; }
+.ic-card:nth-child(2) .ic-big { background: linear-gradient(135deg, #9a86e0, #7a63cf); box-shadow: 0 10px 22px rgba(122,99,207,.35); }
+.ic-card:nth-child(3) .ic-big { background: linear-gradient(135deg, #52c39b, #2fa57d); box-shadow: 0 10px 22px rgba(47,165,125,.35); }
+.ic-card h3 { margin: 0 0 6px; font-size: 22px; }
+.ic-card p { margin: 0 0 14px; color: var(--muted); }
+.ic-card .paybadges { justify-content: center; flex-wrap: wrap; margin-top: auto !important; }
+.ic-card .chip { margin-top: auto; background: var(--blush); color: var(--accent); font-weight: 700; border-radius: 999px; padding: 6px 16px; font-size: 14px; }
+.ic-card .btn { margin-top: auto; }

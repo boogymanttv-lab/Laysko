@@ -25,11 +25,6 @@ export default async function RootLayout({ children }) {
   const strip = msgs.length ? Array.from({ length: Math.max(2, Math.ceil(12 / msgs.length)) }).flatMap(() => msgs) : [];
   return (
     <html lang="bg">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap&subset=cyrillic" rel="stylesheet" />
-      </head>
       <body>
         <CartProvider>
         {strip.length > 0 && (

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { db, PUBLIC_COLS } from "@/lib/db";
 import { getHome, getSettings } from "@/lib/settings";
-import { Shield, Truck, Undo, Chat, Arrow, Check, Bag } from "./Icons";
+import { Shield, Truck, Undo, Chat, Arrow, Check, Bag, Card } from "./Icons";
 import { getCategories } from "@/lib/categories";
 import ProductCard from "./ProductCard";
 import ProductTabs from "./ProductTabs";
@@ -163,10 +163,26 @@ export default async function Home() {
       <section className="section soft">
         <div className="container">
           <h2 className="sec-title">{h.delivery.title}</h2>
+          <p className="sec-sub">Всичко, което трябва да знаеш, преди да поръчаш.</p>
           <div className="info3">
-            <div><h3>Доставка</h3><p>{h.delivery.ship}</p></div>
-            <div><h3>Плащане</h3><p>{h.delivery.pay}</p><p className="paybadges"><b>VISA</b><b>Mastercard</b></p></div>
-            <div><h3>Връщане и поддръжка</h3><p>{h.delivery.ret}</p><Link href="/contact" className="link-arrow">Свържи се с нас <Arrow /></Link></div>
+            <div className="ic-card">
+              <div className="ic-big"><Truck width={30} height={30} /></div>
+              <h3>Доставка</h3>
+              <p>{h.delivery.ship}</p>
+              <span className="chip">7–21 работни дни</span>
+            </div>
+            <div className="ic-card">
+              <div className="ic-big"><Card width={30} height={30} /></div>
+              <h3>Плащане</h3>
+              <p>{h.delivery.pay}</p>
+              <p className="paybadges"><b>VISA</b><b>Mastercard</b><b>🔒 Stripe</b></p>
+            </div>
+            <div className="ic-card">
+              <div className="ic-big"><Undo width={30} height={30} /></div>
+              <h3>Връщане и поддръжка</h3>
+              <p>{h.delivery.ret}</p>
+              <Link href="/contact" className="btn sm">Свържи се с нас</Link>
+            </div>
           </div>
         </div>
       </section>
