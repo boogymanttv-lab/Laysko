@@ -29,7 +29,7 @@ export const metadata = {
     images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE }],
   },
   alternates: { canonical: "/" },
-  icons: { apple: "/icon.png" },
+  icons: { icon: [{ url: "/icon.png", type: "image/png", sizes: "128x128" }], shortcut: "/icon.png", apple: "/icon.png" },
   twitter: { card: "summary_large_image", title: SITE, description: DESC, images: ["/og.png"] },
 };
 
