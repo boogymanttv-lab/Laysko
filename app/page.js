@@ -4,6 +4,7 @@ import { getHome, getSettings } from "@/lib/settings";
 import { Shield, Truck, Undo, Chat, Arrow, Check, Bag, Card } from "./Icons";
 import { getCategories } from "@/lib/categories";
 import ProductCard from "./ProductCard";
+import { eur } from "@/lib/format";
 import ProductTabs from "./ProductTabs";
 import VideoBlock from "./VideoBlock";
 
@@ -23,7 +24,8 @@ export default async function Home() {
     .from("products").select(PUBLIC_COLS).eq("active", true).order("created_at", { ascending: false });
   const list = products || [];
   const h = await getHome();
-  const heroImg = h.images.hero || list[0]?.images?.[0];
+  const heroProd = list.find((x) => x.id === h.hero.product);
+  const heroImg = heroProd?.images?.[0] || h.images.hero || list[0]?.images?.[0];
   const storyImg = h.images.story || list[1]?.images?.[0] || heroImg;
 
   const cats = (await getCategories()).map((c) => ({ name: c.name, img: c.image }));
@@ -50,8 +52,18 @@ export default async function Home() {
             </div>
           </div>
           <div className="fhero-img">
-            {heroImg ? <img src={heroImg} alt="" /> : <div className="ph" />}
-            <div className="fl fl1"><Truck width={18} height={18} /> Безплатна доставка над 100 €</div>
+            {heroProd ? (
+              <Link href={`/product/${heroProd.slug}`} aria-label={heroProd.title}>
+                {heroImg ? <img src={heroImg} alt={heroProd.title} /> : <div className="ph" />}
+              </Link>
+            ) : (heroImg ? <img src={heroImg} alt="" /> : <div className="ph" />)}
+            {heroProd ? (
+              <Link href={`/product/${heroProd.slug}`} className="fl fl1 fl-prod">
+                <span>{heroProd.title}</span><b>{eur(heroProd.price_cents)}</b>
+              </Link>
+            ) : (
+              <div className="fl fl1"><Truck width={18} height={18} /> Безплатна доставка над 100 €</div>
+            )}
             <div className="fl fl2"><Shield width={18} height={18} /> Сигурно плащане</div>
           </div>
         </div>

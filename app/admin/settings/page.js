@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   requireAdmin();
   const home = await getHome();
-  const { data } = await db().from("products").select("category");
+  const { data } = await db().from("products").select("id, title, category, active").order("created_at", { ascending: false });
   const categories = [...new Set((data || []).map((p) => p.category).filter(Boolean))].sort();
   return (
     <>
@@ -18,7 +18,7 @@ export default async function SettingsPage() {
       <p className="muted" style={{ maxWidth: 640 }}>
         Тук редактираш всички текстове, снимки и клипове на началната страница, бягащата лента и футъра.
       </p>
-      <HomeForm initial={home} categories={categories} />
+      <HomeForm initial={home} categories={categories} products={(data || []).filter((p) => p.active).map((p) => ({ id: p.id, title: p.title }))} />
     </>
   );
 }

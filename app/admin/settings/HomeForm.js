@@ -36,7 +36,7 @@ const Sec = ({ title, hint, children }) => (
   </section>
 );
 
-export default function HomeForm({ initial, categories }) {
+export default function HomeForm({ initial, categories, products = [] }) {
   const [c, setC] = useState(initial);
   const [files, setFiles] = useState({});
   const [previews, setPreviews] = useState({});
@@ -86,7 +86,12 @@ export default function HomeForm({ initial, categories }) {
         <T label="Подзаглавие" area value={c.hero.sub} onChange={(v) => set("hero.sub", v)} />
         <T label="Бутон 1" value={c.hero.btn1} onChange={(v) => set("hero.btn1", v)} />
         <T label="Бутон 2 (към категориите)" value={c.hero.btn2} onChange={(v) => set("hero.btn2", v)} />
-        <Img label="Снимка" value={c.images.hero} preview={previews.hero} onUrl={(v) => set("images.hero", v)} onFile={(f) => pickFile("hero", f)} />
+        <label>Продукт в hero-то (показва снимката и цената му и води към него)</label>
+        <select value={c.hero.product} onChange={(e) => set("hero.product", e.target.value)}>
+          <option value="">— без избран продукт (ползва се снимката по-долу) —</option>
+          {products.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+        </select>
+        <Img label="Собствена снимка (ако не си избрал продукт)" value={c.images.hero} preview={previews.hero} onUrl={(v) => set("images.hero", v)} onFile={(f) => pickFile("hero", f)} />
       </Sec>
 
       <Sec title="Четирите значки под hero-то">
