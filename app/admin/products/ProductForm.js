@@ -2,31 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { saveProduct } from "../actions";
+import { shrink } from "./shrink";
+import ContentEditor, { contentToState } from "./ContentEditor";
 
 let uid = 0;
 const nid = () => `i${++uid}`;
 
-// Смалява снимките в браузъра (макс. 1600px), за да се качват бързо и да не надвишават лимита
-async function shrink(file) {
-  if (!file.type.startsWith("image/") || file.type === "image/gif") return file;
-  try {
-    const bmp = await createImageBitmap(file);
-    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
-    const c = document.createElement("canvas");
-    c.width = Math.round(bmp.width * scale);
-    c.height = Math.round(bmp.height * scale);
-    const ctx = c.getContext("2d");
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, c.width, c.height);
-    ctx.drawImage(bmp, 0, 0, c.width, c.height);
-    const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
-    return new File([blob], file.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" });
-  } catch {
-    return file;
-  }
-}
-
-export default function ProductForm({ product }) {
+export default function ProductForm({ product, categories = [] }) {
   const p = product || {};
   const [state, action] = useFormState(saveProduct, null);
   const errRef = useRef(null);
@@ -44,6 +26,8 @@ export default function ProductForm({ product }) {
   const [items, setItems] = useState((p.images || []).map((url) => ({ id: nid(), url })));
   const [urlInput, setUrlInput] = useState("");
   const [imgErr, setImgErr] = useState("");
+  const [content, setContent] = useState(() => contentToState(p.content));
+  const [submitErr, setSubmitErr] = useState("");
 
   useEffect(() => {
     if (state?.error) {
@@ -56,6 +40,18 @@ export default function ProductForm({ product }) {
   const layout = JSON.stringify(
     items.map((i) => (i.file ? { f: fileItems.indexOf(i) } : { u: i.url }))
   );
+
+  const secFiles = content.sections.filter((x) => x.file);
+  const contentJson = JSON.stringify({
+    bullets: content.bullets.split("\n").map((x) => x.trim()).filter(Boolean),
+    sections: content.sections.map((x) => ({
+      title: x.title, text: x.text,
+      image: x.file ? { f: secFiles.indexOf(x) } : { u: x.url },
+    })),
+    features: content.features.map(({ title, text }) => ({ title, text })),
+    faq: content.faq.map(({ q, a }) => ({ q, a })),
+    specs: content.specs.map(({ k, v }) => ({ k, v })),
+  });
 
   async function addFiles(e) {
     setImgErr("");
@@ -117,7 +113,14 @@ export default function ProductForm({ product }) {
 
   // Добавя новите файлове към формата при изпращане
   function submit(fd) {
+    const total = [...fileItems, ...secFiles].reduce((n, i) => n + i.file.size, 0);
+    if (total > 4.2 * 1024 * 1024) {
+      setSubmitErr("Новите снимки са твърде големи наведнъж. Запази първо част от тях, после добави останалите.");
+      return;
+    }
+    setSubmitErr("");
     fileItems.forEach((i) => fd.append("files", i.file));
+    secFiles.forEach((i) => fd.append("secfiles", i.file));
     setPending(true);
     action(fd);
   }
@@ -151,8 +154,15 @@ export default function ProductForm({ product }) {
       <label htmlFor="title">Заглавие</label>
       <input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
 
-      <label htmlFor="category">Категория (за филтъра в магазина, по избор)</label>
-      <input id="category" name="category" defaultValue={p.category || ""} placeholder="напр. Дом, Мода, Декорация" />
+      <label htmlFor="category">Категория</label>
+      <select id="category" name="category" defaultValue={p.category || ""}>
+        <option value="">— без категория —</option>
+        {p.category && !categories.includes(p.category) && <option value={p.category}>{p.category}</option>}
+        {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+      </select>
+      <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
+        Категориите се създават първо от <a href="/admin/categories" style={{ textDecoration: "underline" }}>Админ → Категории</a>.
+      </p>
 
       <label htmlFor="description">Описание</label>
       <textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -210,11 +220,15 @@ export default function ProductForm({ product }) {
         </div>
       </div>
 
+      <input type="hidden" name="content" value={contentJson} />
+      <ContentEditor value={content} onChange={setContent} />
+
       <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400 }}>
         <input type="checkbox" name="active" style={{ width: "auto" }} defaultChecked={p.active ?? true} />
         Показвай в магазина
       </label>
 
+      {submitErr && <div className="banner-err" style={{ marginTop: 16 }}>⚠ {submitErr}</div>}
       {state?.error && <div className="banner-err" style={{ marginTop: 16 }}>⚠ {state.error}</div>}
       <div style={{ marginTop: 16 }}>
         <button className="btn primary" disabled={pending}>{pending ? "Запазване..." : "Запази"}</button>

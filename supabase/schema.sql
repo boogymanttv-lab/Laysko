@@ -12,6 +12,7 @@ create table if not exists products (
   supplier_cost_cents integer,              -- какво плащаш на Etsy/Temu (само за теб)
   images text[] not null default '{}',
   category text,                            -- категория за филтъра (по избор)
+  content jsonb not null default '{}'::jsonb, -- съдържание на продуктовата страница
   source text not null default 'other',     -- etsy | temu | other
   source_url text,                          -- линк към доставчика (само за теб)
   active boolean not null default true,
@@ -53,3 +54,13 @@ create policy "public read active products" on products
   for select using (active = true);
 
 -- orders: без политики => достъп само през service role (сървъра).
+
+-- Категории (създават се от админ панела)
+create table if not exists categories (
+  id uuid primary key default gen_random_uuid(),
+  name text not null unique,
+  image_url text,
+  sort int not null default 0,
+  created_at timestamptz not null default now()
+);
+alter table categories enable row level security;

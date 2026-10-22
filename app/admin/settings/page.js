@@ -1,22 +1,24 @@
 import { requireAdmin } from "@/lib/auth";
-import { getSettings } from "@/lib/settings";
+import { getHome } from "@/lib/settings";
+import { db } from "@/lib/db";
 import AdminNav from "../AdminNav";
-import HeroForm from "./HeroForm";
+import HomeForm from "./HomeForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
   requireAdmin();
-  const s = await getSettings();
+  const home = await getHome();
+  const { data } = await db().from("products").select("category");
+  const categories = [...new Set((data || []).map((p) => p.category).filter(Boolean))].sort();
   return (
     <>
       <AdminNav />
       <h1 style={{ fontSize: 24 }}>Начална страница</h1>
-      <p className="muted" style={{ maxWidth: 620 }}>
-        Двете снимки в колажа най-горе на сайта. Качи файл или постави линк. Ако не зададеш снимка,
-        се ползват снимките на първите два продукта.
+      <p className="muted" style={{ maxWidth: 640 }}>
+        Тук редактираш всички текстове, снимки и клипове на началната страница, бягащата лента и футъра.
       </p>
-      <HeroForm hero1={s.hero_1 || ""} hero2={s.hero_2 || ""} />
+      <HomeForm initial={home} categories={categories} />
     </>
   );
 }

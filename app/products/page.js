@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { db, PUBLIC_COLS } from "@/lib/db";
 import ProductCard from "../ProductCard";
+import { getCategoryNames } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Продукти" };
@@ -28,7 +29,7 @@ export default async function ProductsPage({ searchParams }) {
   const sale = searchParams.sale === "1";
   const sort = SORTS[searchParams.sort] ? searchParams.sort : "new";
 
-  const categories = [...new Set(all.map((p) => p.category).filter(Boolean))].sort();
+  const categories = [...new Set([...(await getCategoryNames()), ...all.map((p) => p.category).filter(Boolean)])];
   const maxPrice = all.length ? Math.ceil(Math.max(...all.map((p) => p.price_cents)) / 100) : 0;
   const discount = (p) => (p.compare_at_cents > p.price_cents ? 1 - p.price_cents / p.compare_at_cents : 0);
 
@@ -98,8 +99,17 @@ export default async function ProductsPage({ searchParams }) {
         <div>
           {!list.length ? (
             <div className="empty">
-              <h3 style={{ margin: "0 0 6px" }}>Няма намерени продукти</h3>
-              <p className="muted" style={{ margin: 0 }}>Опитай с други филтри.</p>
+              {category && !all.some((p) => p.category === category) ? (
+                <>
+                  <h3 style={{ margin: "0 0 6px" }}>В категория „{category}“ все още няма продукти</h3>
+                  <p className="muted" style={{ margin: 0 }}>Скоро добавяме нови. Разгледай другите категории.</p>
+                </>
+              ) : (
+                <>
+                  <h3 style={{ margin: "0 0 6px" }}>Няма намерени продукти</h3>
+                  <p className="muted" style={{ margin: 0 }}>Опитай с други филтри.</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="grid shop-grid">
