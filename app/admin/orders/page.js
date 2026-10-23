@@ -2,8 +2,9 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { eur } from "@/lib/format";
 import AdminNav from "../AdminNav";
-import { updateOrder, markOrdered } from "../actions";
+import { updateOrder, markOrdered, deleteOrder } from "../actions";
 import OrderTools from "./OrderTools";
+import ConfirmButton from "../ConfirmButton";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +105,10 @@ export default async function Orders() {
                 </div>
                 <div><button className="btn sm">Запази</button></div>
               </form>
+              <div style={{ marginTop: 10, textAlign: "right" }}>
+                <ConfirmButton action={deleteOrder} fields={{ id: o.id }} label="Изтрий поръчката"
+                  message="Да изтрия тази поръчка? Тя ще изчезне и от статистиката. Действието е необратимо." />
+              </div>
             </div>
           );
         })}

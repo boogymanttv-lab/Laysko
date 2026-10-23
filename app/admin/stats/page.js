@@ -4,6 +4,9 @@ import { requireAdmin } from "@/lib/auth";
 import { eur } from "@/lib/format";
 import { computeStats } from "@/lib/stats";
 import AdminNav from "../AdminNav";
+import ConfirmButton from "../ConfirmButton";
+import { resetStats, clearStatsReset } from "../actions";
+import { getSettings } from "@/lib/settings";
 import { TimeChart, HBars } from "./Charts";
 
 export const dynamic = "force-dynamic";
@@ -34,8 +37,11 @@ export default async function Stats({ searchParams }) {
     client.from("products").select("id, title, source, supplier_cost_cents, price_cents"),
   ]);
 
+  const resetAt = (await getSettings()).stats_reset_at || "";
+  const visible = resetAt ? (orders || []).filter((o) => o.created_at >= resetAt) : (orders || []);
+
   const s = computeStats({
-    orders: orders || [], products: products || [],
+    orders: visible, products: products || [],
     range: range === "all" ? null : parseInt(range, 10), by,
   });
   const t = s.totals;
@@ -59,6 +65,13 @@ export default async function Stats({ searchParams }) {
           </div>
         </div>
       </div>
+
+      <p className="muted" style={{ margin: "0 0 16px", fontSize: 14 }}>
+        {resetAt
+          ? <>Статистиката е нулирана на {new Date(resetAt).toLocaleString("bg-BG")} – брои се само след тази дата. <ConfirmButton action={clearStatsReset} label="Покажи всичко отново" danger={false} message="Да върна статистиката към всички поръчки?" /> </>
+          : null}
+        <ConfirmButton action={resetStats} label="Нулирай статистиката" message="Да нулирам статистиката? Поръчките остават, но числата започват от нула от този момент." />
+      </p>
 
       <div className="viz-root">
         <div className="kpis">

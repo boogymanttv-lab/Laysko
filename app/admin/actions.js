@@ -331,3 +331,25 @@ export async function deleteSubscriber(formData) {
   if (id) await db().from("subscribers").delete().eq("id", id);
   revalidatePath("/admin/subscribers");
 }
+
+export async function deleteOrder(formData) {
+  requireAdmin();
+  const id = String(formData.get("id") || "");
+  if (id) await db().from("orders").delete().eq("id", id);
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin/stats");
+}
+
+// Нулиране на статистиката: поръчките остават, но статистиката брои само поръчките след тази дата
+export async function resetStats() {
+  requireAdmin();
+  await db().from("site_settings").upsert(
+    [{ key: "stats_reset_at", value: new Date().toISOString(), updated_at: new Date().toISOString() }], { onConflict: "key" });
+  revalidatePath("/admin/stats");
+}
+
+export async function clearStatsReset() {
+  requireAdmin();
+  await db().from("site_settings").delete().eq("key", "stats_reset_at");
+  revalidatePath("/admin/stats");
+}
