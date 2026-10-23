@@ -227,6 +227,12 @@ export default function ProductForm({ product, categories = [] }) {
         <input type="checkbox" name="active" style={{ width: "auto" }} defaultChecked={p.active ?? true} />
         Показвай в магазина
       </label>
+      {!p.id && (
+        <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 400 }}>
+          <input type="checkbox" name="notify" style={{ width: "auto" }} defaultChecked />
+          Изпрати имейл за този продукт на абонатите
+        </label>
+      )}
 
       {submitErr && <div className="banner-err" style={{ marginTop: 16 }}>⚠ {submitErr}</div>}
       {state?.error && <div className="banner-err" style={{ marginTop: 16 }}>⚠ {state.error}</div>}

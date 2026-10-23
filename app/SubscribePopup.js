@@ -61,7 +61,11 @@ export default function SubscribePopup({ enabled, delay, percent, title, text })
     <div className="sub-back" onClick={close}>
       <div className="sub-box" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <button className="sub-x" aria-label="Затвори" onClick={close}>×</button>
-        <div className="sub-paw">🐾</div>
+        <div className="sub-hero">
+          <span className="sub-deco d1">🐾</span><span className="sub-deco d2">🐾</span>
+          <div className="sub-off"><b>{res?.percent || percent}%</b><small>отстъпка</small></div>
+        </div>
+        <div className="sub-body">
         {!res ? (
           <>
             <h2>{title}</h2>
@@ -93,6 +97,7 @@ export default function SubscribePopup({ enabled, delay, percent, title, text })
             <button className="btn sm" onClick={() => setOpen(false)}>Към магазина</button>
           </>
         )}
+        </div>
       </div>
     </div>
   );

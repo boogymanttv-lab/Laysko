@@ -26,8 +26,9 @@ export async function POST(req) {
     const percent = Math.max(1, Math.min(50, parseInt(home.popup.percent, 10) || 10));
 
     const client = db();
-    const { data: ex } = await client.from("subscribers").select("code, percent, used_at").eq("email", mail).maybeSingle();
+    const { data: ex } = await client.from("subscribers").select("code, percent, used_at, unsubscribed_at").eq("email", mail).maybeSingle();
     if (ex) {
+      if (ex.unsubscribed_at) await client.from("subscribers").update({ unsubscribed_at: null }).eq("email", mail);
       // Не показваме чужд код на екрана – само го пращаме на имейла (ако не е използван)
       if (!ex.used_at) await sendEmail({ to: mail, subject: `Твоят код за ${ex.percent}% отстъпка`, html: codeEmail({ code: ex.code, percent: ex.percent, site: SITE }) });
       return NextResponse.json({ existing: true, used: !!ex.used_at });

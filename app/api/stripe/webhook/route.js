@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { sendEmail, orderEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -45,6 +46,7 @@ export async function POST(req) {
         unit_cents: lines[idx]?.price?.unit_amount ?? byId[w.id]?.price_cents ?? null,
       }));
 
+      const { data: existing } = await db().from("orders").select("id").eq("stripe_session_id", s.id).maybeSingle();
       const { error } = await db().from("orders").upsert(
         {
           stripe_session_id: s.id,
@@ -64,6 +66,18 @@ export async function POST(req) {
       if (error) {
         console.error(error);
         return NextResponse.json({ error: "db" }, { status: 500 });
+      }
+      const custEmail = s.customer_details?.email;
+      if (!existing && custEmail) {
+        await sendEmail({
+          to: custEmail,
+          subject: "Потвърждение на поръчката ти",
+          html: orderEmail({
+            items, total: s.amount_total, name: ship?.name || s.customer_details?.name,
+            address: ship?.address || s.customer_details?.address,
+            site: process.env.NEXT_PUBLIC_SITE_NAME || "Laysko",
+          }),
+        });
       }
       if (s.metadata?.discount_code) {
         await db().from("subscribers").update({ used_at: new Date().toISOString() })

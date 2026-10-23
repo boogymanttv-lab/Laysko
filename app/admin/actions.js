@@ -138,6 +138,18 @@ export async function saveProduct(prevState, formData) {
     }
     const { error } = await client.from("products").insert(row);
     if (error) return { error: error.code === "23505" ? "Вече има продукт с този адрес (slug)" : dbMsg(error) };
+    if (row.active && formData.get("notify") === "on") {
+      try {
+        const { sendBatch, productEmail, unsubLink } = await import("@/lib/email");
+        const { data: subs } = await client.from("subscribers").select("id, email").is("unsubscribed_at", null).limit(2000);
+        const site = process.env.NEXT_PUBLIC_SITE_NAME || "Laysko";
+        await sendBatch((subs || []).map((u) => ({
+          to: u.email,
+          subject: `Ново в ${site}: ${row.title}`,
+          html: productEmail({ product: row, unsubUrl: unsubLink(u.id), site }),
+        })));
+      } catch (e) { console.error(e); }
+    }
   }
   revalidatePath("/");
   revalidatePath("/products");
