@@ -511,3 +511,7 @@ body { background: var(--cream); }
 .fl-prod span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fl-prod b { color: var(--accent); white-space: nowrap; }
 .fhero-img a { display: block; }
+
+/* Бързи действия за поръчка при доставчика */
+.order-tools { display: grid; gap: 8px; margin: 10px 0; padding: 12px; background: var(--soft); border-radius: 12px; }
+.ot-row { display: flex; flex-wrap: wrap; gap: 8px; }

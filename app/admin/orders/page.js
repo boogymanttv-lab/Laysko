@@ -2,7 +2,8 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { eur } from "@/lib/format";
 import AdminNav from "../AdminNav";
-import { updateOrder } from "../actions";
+import { updateOrder, markOrdered } from "../actions";
+import OrderTools from "./OrderTools";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,11 @@ export default async function Orders() {
     <>
       <AdminNav />
       <h1 style={{ fontSize: 24 }}>Поръчки</h1>
-      <p className="muted">След плащане: отвори линка към доставчика за всеки продукт, поръчай с адреса на клиента, после маркирай „Поръчана“ и добави проследяване.</p>
+      <ol className="muted" style={{ maxWidth: 640, paddingLeft: 20, fontSize: 14 }}>
+        <li>Натисни „Отвори при доставчика“ и добави продукта в количката му.</li>
+        <li>Натисни „Копирай всички данни за доставка“ и ги постави при поръчката.</li>
+        <li>След като поръчаш, натисни „Маркирай като поръчана“ и по-късно добави проследяване.</li>
+      </ol>
       {!orders?.length && <p className="muted">Още няма поръчки.</p>}
       <div style={{ display: "grid", gap: 16 }}>
         {orders?.map((o) => {
@@ -54,6 +59,32 @@ export default async function Orders() {
                 {[a.line1, a.line2, a.postal_code, a.city, a.state, a.country].filter(Boolean).join(", ")}<br />
                 {o.customer_email} {o.customer_phone && `· ${o.customer_phone}`}
               </p>
+
+              {(() => {
+                const addressLine = [a.line1, a.line2, a.postal_code, a.city, a.state, a.country].filter(Boolean).join(", ");
+                const fullBlock = [
+                  o.customer_name,
+                  a.line1, a.line2,
+                  [a.postal_code, a.city].filter(Boolean).join(" "),
+                  a.state, a.country,
+                  o.customer_phone && `Тел: ${o.customer_phone}`,
+                  o.customer_email && `Имейл: ${o.customer_email}`,
+                ].filter(Boolean).join("\n");
+                const links = items
+                  .filter((i) => urlById[i.product_id])
+                  .map((i) => ({ url: urlById[i.product_id], title: i.title }));
+                return (
+                  <OrderTools name={o.customer_name || ""} phone={o.customer_phone || ""} email={o.customer_email || ""}
+                    addressLine={addressLine} fullBlock={fullBlock} links={links} />
+                );
+              })()}
+
+              {o.status === "paid" && (
+                <form action={markOrdered} style={{ margin: "10px 0 0" }}>
+                  <input type="hidden" name="id" value={o.id} />
+                  <button className="btn sm">Маркирай като поръчана</button>
+                </form>
+              )}
 
               <form action={updateOrder} className="two" style={{ alignItems: "end" }}>
                 <input type="hidden" name="id" value={o.id} />

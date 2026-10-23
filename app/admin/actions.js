@@ -304,3 +304,10 @@ export async function deleteCategory(formData) {
   revalidatePath("/", "layout");
   revalidatePath("/admin/categories");
 }
+
+
+export async function markOrdered(formData) {
+  requireAdmin();
+  await db().from("orders").update({ status: "ordered" }).eq("id", formData.get("id")).eq("status", "paid");
+  revalidatePath("/admin/orders");
+}
