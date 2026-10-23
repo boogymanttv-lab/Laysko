@@ -15,7 +15,7 @@ export default function ClosingCta({ slug, title, image, priceCents, compareAtCe
           {eur(priceCents)}
           {compareAtCents > priceCents && <span className="old" style={{ color: "#c9c9ff" }}>{eur(compareAtCents)}</span>}
         </div>
-        <p>Сигурно плащане със Stripe · Доставка до адреса ти за 7–21 работни дни</p>
+        <p>Сигурно плащане със Stripe · Доставка до адреса ти за 1–3 работни дни</p>
       </div>
       <button className="btn lg" onClick={() => add({ slug, title, image: image || "", price_cents: priceCents }, 1)}>
         <Bag width={20} height={20} /> Добави в кошницата

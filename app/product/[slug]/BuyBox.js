@@ -64,7 +64,7 @@ export default function BuyBox({ slug, title, image, priceCents, compareAtCents 
 
       <ul className="perks">
         <li><Shield width={18} height={18} /> Сигурно плащане със Stripe</li>
-        <li><Truck width={18} height={18} /> Доставка до адреса ти за 7–21 работни дни</li>
+        <li><Truck width={18} height={18} /> Доставка до адреса ти за 1–3 работни дни</li>
         <li><Check /> Поръчка като гост, без регистрация</li>
       </ul>
     </>

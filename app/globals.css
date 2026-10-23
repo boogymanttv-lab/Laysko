@@ -527,3 +527,30 @@ body { background: var(--cream); }
   .shop-grid .go { width: 32px; height: 32px; flex: none; }
   .shop-grid .tag { top: 8px; left: 8px; font-size: 11px; padding: 3px 8px; }
 }
+
+/* Инфо секция във footer */
+.foot-info { display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 32px; padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid #e2ddd1; }
+.site-footer .foot-info h4 { font-size: 15px; }
+.site-footer .foot-info p { margin: 0 0 8px; line-height: 1.5; }
+.site-footer .foot-info b { color: var(--fg); }
+.site-footer .foot-info .chip { display: inline-block; background: var(--blush); color: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; margin-left: 4px; }
+.foot-steps { margin: 0; padding-left: 20px; color: var(--muted); display: grid; gap: 8px; }
+.foot-faq details { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 2px 14px; margin-bottom: 8px; }
+.foot-faq summary { cursor: pointer; font-weight: 600; padding: 10px 0; list-style: none; display: flex; justify-content: space-between; gap: 10px; color: var(--fg); font-size: 14px; }
+.foot-faq summary::-webkit-details-marker { display: none; }
+.foot-faq summary::after { content: "+"; color: var(--muted); }
+.foot-faq details[open] summary::after { content: "−"; }
+.foot-faq details p { margin: 0 0 12px; }
+@media (max-width: 900px) { .foot-info { grid-template-columns: 1fr; gap: 24px; } }
+
+/* Акордеон във footer */
+.foot-acc details { border-bottom: 1px solid #e2ddd1; padding: 2px 0; }
+.foot-acc summary { cursor: pointer; padding: 9px 0; list-style: none; display: flex; justify-content: space-between; gap: 10px; color: var(--fg); font-weight: 600; font-size: 14px; }
+.foot-acc summary::-webkit-details-marker { display: none; }
+.foot-acc summary::after { content: "+"; color: var(--muted); }
+.foot-acc details[open] summary::after { content: "−"; }
+.foot-acc details p { margin: 0 0 8px; line-height: 1.5; color: var(--muted); }
+.foot-acc b { color: var(--fg); }
+.foot-acc .chip { display: inline-block; background: var(--blush); color: var(--accent); border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 600; }
+.foot-acc { margin-bottom: 10px; }
+@media (min-width: 901px) { .site-footer .cols { grid-template-columns: 1.4fr 1fr 1.6fr; } }

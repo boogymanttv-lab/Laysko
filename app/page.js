@@ -32,7 +32,7 @@ export default async function Home() {
 
   const ids = await bestSellerIds();
   const best = ids.map((id) => list.find((p) => p.id === id)).filter(Boolean).slice(0, 4);
-  const fresh = list.slice(0, 4);
+  const fresh = list.slice(0, 8);
 
   const promoList = h.promo.category ? list.filter((p) => p.category === h.promo.category).slice(0, 5) : [];
   const promoImg = h.images.promo || promoList[0]?.images?.[0];
@@ -123,17 +123,11 @@ export default async function Home() {
       </section>
 
 
-      <section className="section soft" id="how">
-        <div className="container">
-          <span className="eyebrow center-eyebrow">Лесно е</span>
-          <h2 className="sec-title">Как работи поръчката</h2>
-          <div className="steps3">
-            <div className="st"><div className="n">1</div><h3>Избираш продукт</h3><p>Разгледай снимките и описанието, избери количество и го добави в кошницата.</p></div>
-            <div className="st"><div className="n">2</div><h3>Плащаш сигурно</h3><p>Въвеждаш адрес и плащаш с карта. Не се иска регистрация.</p></div>
-            <div className="st"><div className="n">3</div><h3>Получаваш пратката</h3><p>Изпращаме до адреса ти и ти даваме номер за проследяване.</p></div>
-          </div>
-        </div>
-      </section>
+
+
+      <VideoBlock title={h.videosTitle} videos={h.videos} />
+
+
 
       <section className="section">
         <div className="container brand-story">
@@ -143,67 +137,6 @@ export default async function Home() {
             <h2 className="sec-title left">{h.story.title}</h2>
             <p>{h.story.text}</p>
             {h.story.btn && <Link href="/contact" className="btn">{h.story.btn}</Link>}
-          </div>
-        </div>
-      </section>
-
-      <VideoBlock title={h.videosTitle} videos={h.videos} />
-
-
-      <section className="section">
-        <div className="container faq-wrap">
-          <h2 className="sec-title">Често задавани въпроси</h2>
-          <div className="faq">
-            <details><summary>Колко време отнема доставката?</summary><p>Обикновено 7–21 работни дни до адреса ти. След изпращане получаваш номер за проследяване.</p></details>
-            <details><summary>Кога доставката е безплатна?</summary><p>За поръчки над 100 € доставката е безплатна.</p></details>
-            <details><summary>Как мога да платя?</summary><p>С банкова карта (Visa, Mastercard) през Stripe. Данните на картата не минават през нашия сайт.</p></details>
-            <details><summary>Мога ли да върна продукт?</summary><p>Да, в рамките на 14 дни от получаването, без да посочваш причина. Пиши ни през страницата за контакти.</p></details>
-            <details><summary>Трябва ли ми регистрация?</summary><p>Не. Поръчваш като гост – само адрес за доставка и имейл.</p></details>
-          </div>
-        </div>
-      </section>
-
-      {list.length > 4 && (
-        <section className="section">
-          <div className="container">
-            <h2 className="sec-title">Нови продукти</h2>
-            <div className="grid shop-grid">{list.slice(0, 4).map((p) => <ProductCard key={p.id} p={p} />)}</div>
-          </div>
-        </section>
-      )}
-
-      <section className="section soft">
-        <div className="container">
-          <h2 className="sec-title">{h.delivery.title}</h2>
-          <p className="sec-sub">Всичко, което трябва да знаеш, преди да поръчаш.</p>
-          <div className="info3">
-            <div className="ic-card">
-              <div className="ic-big"><Truck width={30} height={30} /></div>
-              <h3>Доставка</h3>
-              <p>{h.delivery.ship}</p>
-              <span className="chip">7–21 работни дни</span>
-            </div>
-            <div className="ic-card">
-              <div className="ic-big"><Card width={30} height={30} /></div>
-              <h3>Плащане</h3>
-              <p>{h.delivery.pay}</p>
-              <p className="paybadges"><b>VISA</b><b>Mastercard</b><b>🔒 Stripe</b></p>
-            </div>
-            <div className="ic-card">
-              <div className="ic-big"><Undo width={30} height={30} /></div>
-              <h3>Връщане и поддръжка</h3>
-              <p>{h.delivery.ret}</p>
-              <Link href="/contact" className="btn sm">Свържи се с нас</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container">
-          <div className="cta-band2">
-            <div><h2>Готов ли си да поръчаш?</h2><p>Разгледай продуктите и поръчай за минута – без регистрация.</p></div>
-            <Link href="/products" className="btn lg"><Bag width={20} height={20} /> Към магазина</Link>
           </div>
         </div>
       </section>

@@ -88,8 +88,28 @@ export default async function RootLayout({ children }) {
               </div>
               <div>
                 <h4>Важна информация</h4>
-                <Link href="/info/delivery">Доставка и плащане</Link>
-                <Link href="/info/returns">Връщане и замяна</Link>
+                <div className="foot-acc">
+                  <details>
+                    <summary>Доставка, плащане и връщане</summary>
+                    <p><b>Доставка:</b> {home.delivery.ship} <span className="chip">1–3 работни дни</span></p>
+                    <p><b>Плащане:</b> {home.delivery.pay}</p>
+                    <p><b>Връщане:</b> {home.delivery.ret}</p>
+                  </details>
+                  <details id="how">
+                    <summary>Как работи поръчката</summary>
+                    <p><b>1.</b> Избираш продукт и го добавяш в кошницата.</p>
+                    <p><b>2.</b> Плащаш сигурно с карта, без регистрация.</p>
+                    <p><b>3.</b> Получаваш пратката с номер за проследяване.</p>
+                  </details>
+                  <details>
+                    <summary>Често задавани въпроси</summary>
+                    <p><b>Колко време отнема доставката?</b> 1–3 работни дни до адреса ти, с номер за проследяване.</p>
+                    <p><b>Кога доставката е безплатна?</b> За поръчки над 100 €.</p>
+                    <p><b>Как мога да платя?</b> С карта (Visa, Mastercard) през Stripe.</p>
+                    <p><b>Мога ли да върна продукт?</b> Да, до 14 дни от получаването.</p>
+                    <p><b>Трябва ли ми регистрация?</b> Не, поръчваш като гост.</p>
+                  </details>
+                </div>
                 <Link href="/contact">Контакти</Link>
               </div>
             </div>
