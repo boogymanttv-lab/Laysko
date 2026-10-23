@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { sendEmail, orderEmail } from "@/lib/email";
+import { sendEmail, orderEmail, emailLogo } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -76,6 +76,7 @@ export async function POST(req) {
             items, total: s.amount_total, name: ship?.name || s.customer_details?.name,
             address: ship?.address || s.customer_details?.address,
             site: process.env.NEXT_PUBLIC_SITE_NAME || "Laysko",
+            logo: await emailLogo(),
           }),
         });
       }

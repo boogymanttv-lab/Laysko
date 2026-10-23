@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { db } from "@/lib/db";
 import { getHome } from "@/lib/settings";
-import { sendEmail, codeEmail } from "@/lib/email";
+import { sendEmail, codeEmail, emailLogo } from "@/lib/email";
 
 const RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const SITE = process.env.NEXT_PUBLIC_SITE_NAME || "Laysko";
@@ -26,11 +26,12 @@ export async function POST(req) {
     const percent = Math.max(1, Math.min(50, parseInt(home.popup.percent, 10) || 10));
 
     const client = db();
+    const logo = await emailLogo();
     const { data: ex } = await client.from("subscribers").select("code, percent, used_at, unsubscribed_at").eq("email", mail).maybeSingle();
     if (ex) {
       if (ex.unsubscribed_at) await client.from("subscribers").update({ unsubscribed_at: null }).eq("email", mail);
       // Не показваме чужд код на екрана – само го пращаме на имейла (ако не е използван)
-      if (!ex.used_at) await sendEmail({ to: mail, subject: `Твоят код за ${ex.percent}% отстъпка`, html: codeEmail({ code: ex.code, percent: ex.percent, site: SITE }) });
+      if (!ex.used_at) await sendEmail({ to: mail, subject: `Твоят код за ${ex.percent}% отстъпка`, html: codeEmail({ code: ex.code, percent: ex.percent, site: SITE, logo }) });
       return NextResponse.json({ existing: true, used: !!ex.used_at });
     }
 
@@ -47,7 +48,7 @@ export async function POST(req) {
       console.error(error);
       return NextResponse.json({ error: /subscribers/.test(error.message) ? "Липсва таблицата subscribers. Изпълни supabase/migration-subscribers.sql." : "Нещо се обърка. Опитай пак." }, { status: 500 });
     }
-    const sent = await sendEmail({ to: mail, subject: `Твоят код за ${percent}% отстъпка`, html: codeEmail({ code, percent, site: SITE }) });
+    const sent = await sendEmail({ to: mail, subject: `Твоят код за ${percent}% отстъпка`, html: codeEmail({ code, percent, site: SITE, logo }) });
     return NextResponse.json({ code, percent, emailed: sent.ok });
   } catch (e) {
     console.error(e);
