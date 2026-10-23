@@ -7,6 +7,7 @@ export default function AdminNav() {
       <Link href="/admin">Продукти</Link>
       <Link href="/admin/categories">Категории</Link>
       <Link href="/admin/orders">Поръчки</Link>
+      <Link href="/admin/subscribers">Абонати</Link>
       <Link href="/admin/stats">Статистика</Link>
       <Link href="/admin/settings">Начална страница</Link>
       <Link href="/" className="muted">Към сайта ↗</Link>

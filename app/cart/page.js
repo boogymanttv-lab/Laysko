@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "../CartProvider";
 import { Arrow, Shield } from "../Icons";
@@ -11,6 +11,26 @@ export default function CartPage() {
   const { items, ready, setQty, remove, total, count } = useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [codeIn, setCodeIn] = useState("");
+  const [disc, setDisc] = useState(null); // { code, percent }
+  const [dmsg, setDmsg] = useState("");
+
+  async function applyCode(c) {
+    const code = String(c ?? codeIn).trim();
+    if (!code) return;
+    setDmsg("");
+    try {
+      const res = await fetch("/api/discount", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+      const d = await res.json();
+      if (!res.ok) { setDisc(null); try { localStorage.removeItem("disc_code"); } catch {} setDmsg(d.error || "Невалиден код."); return; }
+      setDisc(d); setCodeIn(d.code);
+    } catch { setDmsg("Грешка. Опитай пак."); }
+  }
+  useEffect(() => {
+    try { const c = localStorage.getItem("disc_code"); if (c) { setCodeIn(c); applyCode(c); } } catch {}
+    // eslint-disable-next-line
+  }, []);
+  const off = disc ? Math.round((total * disc.percent) / 100) : 0;
 
   async function checkout() {
     setBusy(true);
@@ -19,7 +39,7 @@ export default function CartPage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: items.map((i) => ({ slug: i.slug, quantity: i.qty })) }),
+        body: JSON.stringify({ items: items.map((i) => ({ slug: i.slug, quantity: i.qty })), code: disc?.code || "" }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.error || "Грешка при плащането");
@@ -68,7 +88,13 @@ export default function CartPage() {
             <h3 style={{ margin: "0 0 16px" }}>Обобщение</h3>
             <div className="sum-row"><span>Артикули ({count})</span><span>{eur(total)}</span></div>
             <div className="sum-row muted"><span>Доставка</span><span>Включена</span></div>
-            <div className="sum-row sum-total"><span>Общо</span><b>{eur(total)}</b></div>
+            <div className="code-box">
+              <input placeholder="Имаш код за отстъпка?" value={codeIn} onChange={(e) => setCodeIn(e.target.value)} />
+              <button type="button" className="btn ghost sm" onClick={() => applyCode()}>Приложи</button>
+            </div>
+            {dmsg && <p className="err" style={{ margin: "0 0 10px", fontSize: 13 }}>{dmsg}</p>}
+            {disc && <div className="sum-row" style={{ color: "var(--accent)" }}><span>Отстъпка {disc.percent}%</span><span>−{eur(off)}</span></div>}
+            <div className="sum-row sum-total"><span>Общо</span><b>{eur(total - off)}</b></div>
             <button className="btn primary lg block" onClick={checkout} disabled={busy}>
               {busy ? "Зареждане..." : "Към плащане"}
             </button>

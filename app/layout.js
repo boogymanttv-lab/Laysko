@@ -8,6 +8,7 @@ import { getHome } from "@/lib/settings";
 import Brand from "./Brand";
 import MobileNav from "./MobileNav";
 import CookieBar from "./CookieBar";
+import SubscribePopup from "./SubscribePopup";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_NAME || "Laysko";
 export const dynamic = "force-dynamic";
@@ -121,6 +122,13 @@ export default async function RootLayout({ children }) {
         </footer>
         <MobileNav />
         <CookieBar />
+        <SubscribePopup
+          enabled={home.popup.enabled === "1"}
+          delay={parseInt(home.popup.delay, 10) || 20}
+          percent={parseInt(home.popup.percent, 10) || 10}
+          title={home.popup.title}
+          text={home.popup.text}
+        />
         </CartProvider>
       </body>
     </html>

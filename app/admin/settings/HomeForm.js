@@ -148,6 +148,18 @@ export default function HomeForm({ initial, categories, products = [] }) {
         <T label="Връщане" area value={c.delivery.ret} onChange={(v) => set("delivery.ret", v)} />
       </Sec>
 
+      <Sec title="Прозорец за абонамент (отстъпка)" hint="Показва се на посетителя след зададеното време. Кодът е еднократен.">
+        <label>Включен</label>
+        <select value={c.popup.enabled} onChange={(e) => set("popup.enabled", e.target.value)}>
+          <option value="1">Да</option>
+          <option value="0">Не</option>
+        </select>
+        <T label="Отстъпка (%)" value={c.popup.percent} onChange={(v) => set("popup.percent", v.replace(/\D/g, "").slice(0, 2))} />
+        <T label="Показване след (секунди)" value={c.popup.delay} onChange={(v) => set("popup.delay", v.replace(/\D/g, "").slice(0, 3))} />
+        <T label="Заглавие" value={c.popup.title} onChange={(v) => set("popup.title", v)} />
+        <T label="Текст" area value={c.popup.text} onChange={(v) => set("popup.text", v)} />
+      </Sec>
+
       <Sec title="Футър и контакти">
         <T label="Кратко описание" area value={c.footer.about} onChange={(v) => set("footer.about", v)} />
         <T label="Имейл" value={c.footer.email} onChange={(v) => set("footer.email", v)} />

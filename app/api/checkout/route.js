@@ -29,7 +29,21 @@ export async function POST(req) {
       );
     }
 
+    // Код за отстъпка (еднократен)
+    let discount = null;
+    const rawCode = String(body.code || "").trim().toUpperCase();
+    if (rawCode) {
+      const { data: sub } = await db().from("subscribers").select("code, percent, used_at").eq("code", rawCode).maybeSingle();
+      if (!sub || sub.used_at) {
+        return NextResponse.json({ error: "Кодът за отстъпка е невалиден или вече е използван." }, { status: 400 });
+      }
+      discount = sub;
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const coupon = discount
+      ? await stripe.coupons.create({ percent_off: discount.percent, duration: "once", max_redemptions: 1, name: `Код ${discount.code}` })
+      : null;
     const site = process.env.SITE_URL || new URL(req.url).origin;
 
     const session = await stripe.checkout.sessions.create({
@@ -49,7 +63,11 @@ export async function POST(req) {
         allowed_countries: ["BG", "RO", "GR", "DE", "FR", "IT", "ES", "AT", "NL", "BE", "PL", "CZ", "HR", "GB"],
       },
       phone_number_collection: { enabled: true },
-      metadata: { items: JSON.stringify(active.map((p) => ({ id: p.id, q: wanted.get(p.slug) }))) },
+      ...(coupon ? { discounts: [{ coupon: coupon.id }] } : {}),
+      metadata: {
+        items: JSON.stringify(active.map((p) => ({ id: p.id, q: wanted.get(p.slug) }))),
+        ...(discount ? { discount_code: discount.code } : {}),
+      },
       success_url: `${site}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${site}/cart`,
     });

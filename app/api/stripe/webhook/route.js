@@ -65,6 +65,10 @@ export async function POST(req) {
         console.error(error);
         return NextResponse.json({ error: "db" }, { status: 500 });
       }
+      if (s.metadata?.discount_code) {
+        await db().from("subscribers").update({ used_at: new Date().toISOString() })
+          .eq("code", s.metadata.discount_code).is("used_at", null);
+      }
     }
   }
   return NextResponse.json({ received: true });
