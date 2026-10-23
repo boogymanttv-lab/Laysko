@@ -14,24 +14,25 @@ const SITE = process.env.NEXT_PUBLIC_SITE_NAME || "Laysko";
 export const dynamic = "force-dynamic";
 
 const URL_BASE = process.env.SITE_URL || "https://www.laysko.com";
-const DESC = "Внимателно подбрани продукти със сигурно плащане и доставка до адреса ти.";
+const DESC = "Внимателно подбрани продукти с любов. Безплатна доставка над 100 €, 1–3 работни дни и лесно връщане.";
+const TITLE = `${SITE} – подбрани продукти с любов`;
 
 export const metadata = {
   metadataBase: new URL(URL_BASE),
-  title: { default: SITE, template: `%s · ${SITE}` },
+  title: { default: TITLE, template: `%s · ${SITE}` },
   description: DESC,
   openGraph: {
     type: "website",
     locale: "bg_BG",
     siteName: SITE,
-    title: SITE,
+    title: TITLE,
     description: DESC,
     url: "/",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE }],
   },
   alternates: { canonical: "/" },
   icons: { icon: [{ url: "/icon.png", type: "image/png", sizes: "128x128" }], shortcut: "/icon.png", apple: "/icon.png" },
-  twitter: { card: "summary_large_image", title: SITE, description: DESC, images: ["/og.png"] },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESC, images: ["/og.png"] },
 };
 
 export default async function RootLayout({ children }) {
