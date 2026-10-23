@@ -324,3 +324,10 @@ export async function markOrdered(formData) {
   await db().from("orders").update({ status: "ordered" }).eq("id", formData.get("id")).eq("status", "paid");
   revalidatePath("/admin/orders");
 }
+
+export async function deleteSubscriber(formData) {
+  requireAdmin();
+  const id = String(formData.get("id") || "");
+  if (id) await db().from("subscribers").delete().eq("id", id);
+  revalidatePath("/admin/subscribers");
+}
