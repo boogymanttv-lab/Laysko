@@ -515,3 +515,15 @@ body { background: var(--cream); }
 /* Бързи действия за поръчка при доставчика */
 .order-tools { display: grid; gap: 8px; margin: 10px 0; padding: 12px; background: var(--soft); border-radius: 12px; }
 .ot-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Продукти по 2 на ред на телефон */
+@media (max-width: 600px) {
+  .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .shop-grid .card { border-radius: 12px; }
+  .shop-grid .card .body { padding: 12px; gap: 6px; }
+  .shop-grid .card .title { font-size: 14px; line-height: 1.3; }
+  .shop-grid .price { font-size: 16px; }
+  .shop-grid .old { display: block; margin: 0; font-size: 12px; }
+  .shop-grid .go { width: 32px; height: 32px; flex: none; }
+  .shop-grid .tag { top: 8px; left: 8px; font-size: 11px; padding: 3px 8px; }
+}
