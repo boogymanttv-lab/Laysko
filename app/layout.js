@@ -3,7 +3,7 @@ import Link from "next/link";
 import CartProvider from "./CartProvider";
 import CartButton from "./CartButton";
 import { getCategories } from "@/lib/categories";
-import { Search } from "./Icons";
+import { Search, Truck, Undo, Shield, Chat } from "./Icons";
 import { getHome } from "@/lib/settings";
 import Brand from "./Brand";
 import MobileNav from "./MobileNav";
@@ -114,6 +114,11 @@ export default async function RootLayout({ children }) {
                 </div>
                 <Link href="/contact">Контакти</Link>
               </div>
+            </div>
+            <div className="foot-badges">
+              {home.badges.map((b, i) => { const I = [Truck, Undo, Shield, Chat][i]; return (
+                <div className="fb" key={i}><span className="ic"><I width={20} height={20} /></span><div><b>{b.t}</b><small>{b.s}</small></div></div>
+              ); })}
             </div>
             <div className="copy">
               <span>© {new Date().getFullYear()} {SITE}. Всички права запазени.</span>

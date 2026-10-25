@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db, PUBLIC_COLS } from "@/lib/db";
 import ProductCard from "../ProductCard";
 import { getCategoryNames } from "@/lib/categories";
+import FiltersPanel from "./FiltersPanel";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Продукти" };
@@ -60,41 +61,46 @@ export default async function ProductsPage({ searchParams }) {
       </div>
 
       <div className="shop">
-        <form className="filters" method="get" action="/products">
-          <h3>Филтри</h3>
-
-          <label htmlFor="q">Търсене</label>
-          <input id="q" name="q" defaultValue={searchParams.q || ""} placeholder="Търси продукт..." />
-
-          {categories.length > 0 && (
-            <>
-              <label htmlFor="category">Категория</label>
-              <select id="category" name="category" defaultValue={category}>
-                <option value="">Всички</option>
-                {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </>
-          )}
-
-          <label>Цена (EUR){maxPrice ? ` · до ${maxPrice}` : ""}</label>
-          <div className="two">
-            <input name="min" inputMode="decimal" placeholder="От" defaultValue={searchParams.min || ""} />
-            <input name="max" inputMode="decimal" placeholder="До" defaultValue={searchParams.max || ""} />
-          </div>
-
-          <label htmlFor="sort">Подреди по</label>
-          <select id="sort" name="sort" defaultValue={sort}>
-            {Object.entries(SORTS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-          </select>
-
-          <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 500, marginTop: 16 }}>
-            <input type="checkbox" name="sale" value="1" defaultChecked={sale} style={{ width: "auto" }} />
-            Само намалени
-          </label>
-
-          <button className="btn primary block" style={{ marginTop: 18 }}>Приложи</button>
-          {filtered && <Link href="/products" className="btn ghost block" style={{ marginTop: 8 }}>Изчисти филтрите</Link>}
-        </form>
+        <FiltersPanel open={!!filtered}>
+          <form className="filters" method="get" action="/products">
+            <div className="f-grid">
+              <div>
+                <label htmlFor="q">Търсене</label>
+                <input id="q" name="q" defaultValue={searchParams.q || ""} placeholder="Търси продукт..." autoFocus={!filtered} />
+              </div>
+              {categories.length > 0 && (
+                <div>
+                  <label htmlFor="category">Категория</label>
+                  <select id="category" name="category" defaultValue={category}>
+                    <option value="">Всички</option>
+                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              )}
+              <div>
+                <label>Цена (EUR){maxPrice ? ` · до ${maxPrice}` : ""}</label>
+                <div className="two">
+                  <input name="min" inputMode="decimal" placeholder="От" defaultValue={searchParams.min || ""} />
+                  <input name="max" inputMode="decimal" placeholder="До" defaultValue={searchParams.max || ""} />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="sort">Подреди по</label>
+                <select id="sort" name="sort" defaultValue={sort}>
+                  {Object.entries(SORTS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                </select>
+              </div>
+            </div>
+            <label style={{ display: "flex", gap: 8, alignItems: "center", fontWeight: 500, marginTop: 14 }}>
+              <input type="checkbox" name="sale" value="1" defaultChecked={sale} style={{ width: "auto" }} />
+              Само намалени
+            </label>
+            <div className="f-actions">
+              <button className="btn primary">Приложи</button>
+              {filtered && <Link href="/products" className="btn ghost">Изчисти филтрите</Link>}
+            </div>
+          </form>
+        </FiltersPanel>
 
         <div>
           {!list.length ? (

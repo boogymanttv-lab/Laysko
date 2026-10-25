@@ -69,14 +69,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="badges">
-        <div className="container">
-          {h.badges.map((b, i) => { const I = icons[i]; return (
-            <div className="t" key={i}><div className="ic"><I /></div><div><b>{b.t}</b><span>{b.s}</span></div></div>
-          ); })}
-        </div>
-      </section>
-
       {cats.length > 0 && (
         <section className="section" id="categories">
           <div className="container">
@@ -140,6 +132,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
     </>
   );
 }
